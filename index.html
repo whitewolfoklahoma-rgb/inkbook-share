@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InkBook — Tattoo &amp; Piercing Studio Session, Deposit &amp; Consent Book</title>
+<style>
+:root{
+  --bg:#17181c; --panel:#1f2126; --panel2:#26282f; --line:#34363f;
+  --ink:#f2efe9; --dim:#a9a49a; --accent:#c8402a; --accent2:#e0a458;
+  --good:#5dbb7a; --warn:#e0a458; --bad:#e05d4d; --radius:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45}
+header{background:#101114;border-bottom:3px solid var(--accent);padding:12px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+header .logo{font-size:22px;font-weight:800;letter-spacing:.5px}
+header .logo span{color:var(--accent)}
+header .studio{color:var(--dim);font-size:13px}
+header .spacer{flex:1}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px 0}
+nav button{background:var(--panel);color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer;min-height:40px}
+nav button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
+main{padding:14px;max-width:1100px;margin:0 auto}
+section.tab{display:none}
+section.tab.active{display:block}
+h2{font-size:19px;margin:6px 0 10px}
+h3{font-size:16px;margin:16px 0 8px;color:var(--accent2)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px}
+.card .num{font-size:24px;font-weight:800}
+.card .lbl{color:var(--dim);font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
+.card.alert{border-color:var(--bad)}
+.card.alert .num{color:var(--bad)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+label{display:block;font-size:13px;color:var(--dim);margin:8px 0 3px}
+input,select,textarea{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:9px 10px;font-size:15px;min-height:42px}
+textarea{min-height:64px;resize:vertical}
+.grid{display:grid;grid-template-columns:1fr;gap:0 14px}
+@media(min-width:640px){.grid{grid-template-columns:1fr 1fr}.grid .full{grid-column:1/-1}}
+button.btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:15px;font-weight:700;cursor:pointer;min-height:44px}
+button.btn.secondary{background:var(--panel2);color:var(--ink);border:1px solid var(--line);font-weight:600}
+button.btn.small{padding:6px 10px;font-size:13px;min-height:36px;min-height:40px;}
+button.btn.danger{background:#5a2320;color:#f0b8b0;border:1px solid #7a352e}
+.rowbtns{display:flex;gap:6px;flex-wrap:wrap}
+.badge{display:inline-block;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:700}
+.badge.held{background:#3a3423;color:var(--warn)}
+.badge.applied{background:#233a2a;color:var(--good)}
+.badge.forfeited{background:#3d2320;color:var(--bad)}
+.badge.refunded{background:#2a2d3a;color:#9db4e8}
+.badge.done{background:#233a2a;color:var(--good)}
+.badge.booked{background:#2a2d3a;color:#9db4e8}
+.badge.noshow{background:#3d2320;color:var(--bad)}
+.badge.cancelled{background:#2c2c2c;color:var(--dim)}
+.badge.ok{background:#233a2a;color:var(--good)}
+.badge.missing{background:#3d2320;color:var(--bad)}
+.badge.warnb{background:#3a3423;color:var(--warn)}
+.mut{color:var(--dim);font-size:13px}
+.err{background:#3d2320;border:1px solid #7a352e;color:#f0b8b0;border-radius:8px;padding:9px 12px;margin:10px 0;display:none}
+.msg{background:#233a2a;border:1px solid #35573f;color:#bfe6cb;border-radius:8px;padding:9px 12px;margin:10px 0;display:none}
+.empty{color:var(--dim);padding:14px;text-align:center;border:1px dashed var(--line);border-radius:var(--radius)}
+.progress{height:10px;background:var(--panel2);border-radius:99px;overflow:hidden;margin-top:6px}
+.progress>div{height:100%;background:var(--accent2)}
+.searchbar{display:flex;gap:8px;margin-bottom:10px}
+.searchbar input{flex:1}
+.checkline{display:flex;align-items:center;gap:8px;margin-top:10px}
+.checkline input{width:22px;height:22px;min-height:22px}
+.checkline label{margin:0;color:var(--ink);font-size:14px}
+footer{color:var(--dim);font-size:12.5px;text-align:center;padding:18px 12px 26px}
+#printArea{display:none}
+@media print{
+  body{background:#fff;color:#000}
+  header,nav,main,footer{display:none!important}
+  #printArea{display:block;font-size:13px;color:#000}
+  #printArea h2{color:#000}
+  #printArea table th{color:#333}
+  #printArea th,#printArea td{border-bottom:1px solid #999}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">INK<span>BOOK</span></div>
+  <div class="studio" id="hdrStudio">Tattoo &amp; Piercing Studio Book</div>
+  <div class="spacer"></div>
+  <div class="mut" id="hdrToday"></div>
+</header>
+<nav id="tabs">
+  <button data-tab="dashboard" class="active">Dashboard</button>
+  <button data-tab="sessions">Day Book</button>
+  <button data-tab="pieces">Pieces</button>
+  <button data-tab="clients">Clients</button>
+  <button data-tab="deposits">Deposits</button>
+  <button data-tab="consents">Consent Log</button>
+  <button data-tab="artists">Artists &amp; Rent</button>
+  <button data-tab="settings">Settings &amp; Backup</button>
+  <button data-tab="help">Help</button>
+</nav>
+<main>
+<div class="err" id="errBox"></div>
+<div class="msg" id="msgBox"></div>
+
+<!-- ============ DASHBOARD ============ -->
+<section class="tab active" id="tab-dashboard">
+  <h2>Studio dashboard</h2>
+  <div class="cards" id="dashCards"></div>
+  <div class="panel">
+    <h3 style="margin-top:0">Today at the studio</h3>
+    <div id="dashToday"></div>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0">Needs attention</h3>
+    <div id="dashAttention"></div>
+  </div>
+</section>
+
+<!-- ============ SESSIONS / DAY BOOK ============ -->
+<section class="tab" id="tab-sessions">
+  <h2>Day book — sessions</h2>
+  <div class="panel">
+    <div class="grid">
+      <div><label for="sessDateView">View date</label><input type="date" id="sessDateView"></div>
+      <div style="display:flex;align-items:flex-end;gap:8px;padding-bottom:2px">
+        <button class="btn secondary" id="sessTodayBtn" type="button">Today</button>
+        <button class="btn secondary" id="sessPrintBtn" type="button">Print day sheet</button>
+      </div>
+    </div>
+    <div id="dayBookList" style="margin-top:10px"></div>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0" id="sessFormTitle">Book a session</h3>
+    <form id="sessForm">
+      <input type="hidden" id="sessId">
+      <div class="grid">
+        <div><label for="sessClient">Client *</label><select id="sessClient"></select></div>
+        <div><label for="sessPiece">Piece</label><select id="sessPiece"></select></div>
+        <div><label for="sessArtist">Artist *</label><select id="sessArtist"></select></div>
+        <div><label for="sessDate">Date *</label><input type="date" id="sessDate"></div>
+        <div><label for="sessTime">Start time</label><input type="time" id="sessTime"></div>
+        <div><label for="sessHours">Hours</label><input inputmode="decimal" type="number" id="sessHours" step="0.25" min="0" placeholder="2.5"></div>
+        <div><label for="sessCharge">Session charge ($)</label><input inputmode="decimal" type="number" id="sessCharge" step="0.01" min="0" placeholder="400"></div>
+        <div><label for="sessPaid">Paid at session ($)</label><input inputmode="decimal" type="number" id="sessPaid" step="0.01" min="0" placeholder="400"></div>
+        <div><label for="sessStatus">Status</label>
+          <select id="sessStatus"><option value="booked">Booked</option><option value="done">Done</option><option value="noshow">No-show</option><option value="cancelled">Cancelled</option></select></div>
+        <div><label for="sessHealed">Healed-photo note</label><input type="text" id="sessHealed" placeholder="e.g. Healed photo taken, lines settled clean"></div>
+        <div class="full"><label for="sessNotes">Session notes</label><textarea id="sessNotes" placeholder="What got done this sitting, ink used, aftercare notes…"></textarea></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" type="submit">Save session</button>
+        <button class="btn secondary" type="button" id="sessCancelEdit" style="display:none">Cancel edit</button>
+      </div>
+    </form>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0">Upcoming &amp; recent sessions</h3>
+    <div class="tblwrap"><table id="sessTable"><thead><tr><th>Date</th><th>Client</th><th>Piece</th><th>Artist</th><th>Charge</th><th>Paid</th><th>Status</th><th></th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<!-- ============ PIECES ============ -->
+<section class="tab" id="tab-pieces">
+  <h2>Pieces — multi-session tracker</h2>
+  <div class="panel">
+    <h3 style="margin-top:0" id="pieceFormTitle">New piece</h3>
+    <form id="pieceForm">
+      <input type="hidden" id="pieceId">
+      <div class="grid">
+        <div><label for="pieceClient">Client *</label><select id="pieceClient"></select></div>
+        <div><label for="pieceArtist">Artist *</label><select id="pieceArtist"></select></div>
+        <div class="full"><label for="pieceTitle">Design / title *</label><input type="text" id="pieceTitle" placeholder="Koi and peony full sleeve"></div>
+        <div><label for="piecePlacement">Placement</label><input type="text" id="piecePlacement" placeholder="Left arm, shoulder to wrist"></div>
+        <div><label for="pieceStyle">Style</label><input type="text" id="pieceStyle" placeholder="Japanese traditional, color"></div>
+        <div><label for="pieceQuoted">Quoted total ($)</label><input inputmode="decimal" type="number" id="pieceQuoted" step="0.01" min="0" placeholder="1500"></div>
+        <div><label for="piecePlanned">Planned sessions</label><input inputmode="decimal" type="number" id="piecePlanned" step="1" min="0" placeholder="5"></div>
+        <div><label for="pieceStatus">Status</label>
+          <select id="pieceStatus"><option value="consult">Consult / not started</option><option value="in-progress">In progress</option><option value="complete">Complete</option><option value="paused">Paused</option></select></div>
+        <div class="full"><label for="pieceNotes">Notes (incl. healed-photo notes)</label><textarea id="pieceNotes" placeholder="Design references, healed photos on file, client preferences…"></textarea></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" type="submit">Save piece</button>
+        <button class="btn secondary" type="button" id="pieceCancelEdit" style="display:none">Cancel edit</button>
+      </div>
+    </form>
+  </div>
+  <div id="pieceList"></div>
+</section>
+
+<!-- ============ CLIENTS ============ -->
+<section class="tab" id="tab-clients">
+  <h2>Clients</h2>
+  <div class="searchbar"><input type="search" id="clientSearch" placeholder="Search clients by name, phone, or email…"></div>
+  <div class="panel">
+    <h3 style="margin-top:0" id="clientFormTitle">New client</h3>
+    <form id="clientForm">
+      <input type="hidden" id="clientId">
+      <div class="grid">
+        <div><label for="clientName">Full name *</label><input type="text" id="clientName" placeholder="Jordan Alvarez"></div>
+        <div><label for="clientPhone">Phone</label><input type="tel" id="clientPhone" placeholder="555-014-2288"></div>
+        <div><label for="clientEmail">Email</label><input type="email" id="clientEmail" placeholder="name@example.com"></div>
+        <div><label for="clientDob">Date of birth</label><input type="date" id="clientDob"></div>
+        <div class="full"><label for="clientNotes">Notes (allergies, health flags, preferences)</label><textarea id="clientNotes" placeholder="e.g. Latex sensitivity — use nitrile. Prefers morning sittings."></textarea></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" type="submit">Save client</button>
+        <button class="btn secondary" type="button" id="clientCancelEdit" style="display:none">Cancel edit</button>
+      </div>
+    </form>
+  </div>
+  <div class="tblwrap"><table id="clientTable"><thead><tr><th>Client</th><th>Contact</th><th>18+</th><th>Consent</th><th>Deposits held</th><th>Pieces</th><th></th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<!-- ============ DEPOSITS ============ -->
+<section class="tab" id="tab-deposits">
+  <h2>Deposit ledger</h2>
+  <div class="cards" id="depCards"></div>
+  <div class="panel">
+    <h3 style="margin-top:0" id="depFormTitle">Take a deposit</h3>
+    <form id="depForm">
+      <input type="hidden" id="depId">
+      <div class="grid">
+        <div><label for="depClient">Client *</label><select id="depClient"></select></div>
+        <div><label for="depPiece">Piece (optional)</label><select id="depPiece"></select></div>
+        <div><label for="depAmount">Amount ($) *</label><input inputmode="decimal" type="number" id="depAmount" step="0.01" min="0" placeholder="100"></div>
+        <div><label for="depDate">Date *</label><input type="date" id="depDate"></div>
+        <div><label for="depMethod">Method</label>
+          <select id="depMethod"><option>Card</option><option>Cash</option><option>Venmo</option><option>Cash App</option><option>Zelle</option><option>Other</option></select></div>
+        <div><label for="depStatus">Status</label>
+          <select id="depStatus"><option value="held">Held</option><option value="applied">Applied to piece</option><option value="forfeited">Forfeited (policy)</option><option value="refunded">Refunded</option></select></div>
+        <div class="full"><label for="depNote">Note</label><input type="text" id="depNote" placeholder="e.g. For sleeve session 1 — reschedule window 48h"></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" type="submit">Save deposit</button>
+        <button class="btn secondary" type="button" id="depCancelEdit" style="display:none">Cancel edit</button>
+      </div>
+    </form>
+    <p class="mut" id="depPolicyNote"></p>
+  </div>
+  <div class="tblwrap"><table id="depTable"><thead><tr><th>Date</th><th>Client</th><th>Piece</th><th>Amount</th><th>Method</th><th>Status</th><th></th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<!-- ============ CONSENTS ============ -->
+<section class="tab" id="tab-consents">
+  <h2>Consent &amp; release form log</h2>
+  <p class="mut">Studios must be able to prove every client signed the current release — and that ID was checked. Log each signed form here; clients with work booked but no form on file are flagged automatically.</p>
+  <div class="panel">
+    <h3 style="margin-top:0" id="consentFormTitle">Log a signed form</h3>
+    <form id="consentForm">
+      <input type="hidden" id="consentId">
+      <div class="grid">
+        <div><label for="consentClient">Client *</label><select id="consentClient"></select></div>
+        <div><label for="consentFormName">Form</label>
+          <select id="consentFormName"><option>Tattoo Consent &amp; Release</option><option>Piercing Consent &amp; Release</option><option>Minor Piercing Consent (guardian)</option><option>Photo Release</option><option>Aftercare Acknowledgment</option></select></div>
+        <div><label for="consentVersion">Form version</label><input type="text" id="consentVersion" placeholder="v2026.1"></div>
+        <div><label for="consentDate">Date signed *</label><input type="date" id="consentDate"></div>
+        <div><label for="consentMethod">How it's filed</label>
+          <select id="consentMethod"><option>Paper — filed in cabinet</option><option>Scanned — on shop computer</option><option>Tablet — signed on device</option></select></div>
+        <div class="checkline"><input type="checkbox" id="consentIdChecked"><label for="consentIdChecked">Government ID checked &amp; age verified (18+)</label></div>
+        <div class="full"><label for="consentNotes">Notes</label><input type="text" id="consentNotes" placeholder="e.g. ID: state driver's license, last 4 noted in paper file"></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" type="submit">Save form log</button>
+        <button class="btn secondary" type="button" id="consentCancelEdit" style="display:none">Cancel edit</button>
+      </div>
+    </form>
+  </div>
+  <div style="margin-bottom:10px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn secondary" id="consentPrintBtn" type="button">Print consent log</button>
+  </div>
+  <div class="tblwrap"><table id="consentTable"><thead><tr><th>Date signed</th><th>Client</th><th>Form</th><th>Version</th><th>ID checked</th><th>Filed</th><th></th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<!-- ============ ARTISTS ============ -->
+<section class="tab" id="tab-artists">
+  <h2>Artists &amp; booth rent</h2>
+  <div class="panel">
+    <h3 style="margin-top:0" id="artistFormTitle">New artist</h3>
+    <form id="artistForm">
+      <input type="hidden" id="artistId">
+      <div class="grid">
+        <div><label for="artistName">Artist name *</label><input type="text" id="artistName" placeholder="Maya Chen"></div>
+        <div><label for="artistRole">Role</label>
+          <select id="artistRole"><option>Resident artist</option><option>Guest artist</option><option>Piercer</option><option>Apprentice</option><option>Owner</option></select></div>
+        <div><label for="artistRentType">Booth rent type</label>
+          <select id="artistRentType"><option value="split">Percentage split</option><option value="flat">Flat rent (monthly)</option></select></div>
+        <div><label for="artistPct">Artist keeps (%) — for split</label><input inputmode="decimal" type="number" id="artistPct" step="1" min="0" max="100" placeholder="60"></div>
+        <div><label for="artistFlat">Flat rent ($/month) — for flat</label><input inputmode="decimal" type="number" id="artistFlat" step="0.01" min="0" placeholder="600"></div>
+        <div><label for="artistNotes">Notes</label><input type="text" id="artistNotes" placeholder="Station 2, Tue–Sat"></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" type="submit">Save artist</button>
+        <button class="btn secondary" type="button" id="artistCancelEdit" style="display:none">Cancel edit</button>
+      </div>
+    </form>
+  </div>
+  <div class="tblwrap"><table id="artistTable"><thead><tr><th>Artist</th><th>Role</th><th>Rent terms</th><th></th></tr></thead><tbody></tbody></table></div>
+  <div class="panel">
+    <h3 style="margin-top:0">Split report</h3>
+    <div class="grid">
+      <div><label for="repFrom">From</label><input type="date" id="repFrom"></div>
+      <div><label for="repTo">To</label><input type="date" id="repTo"></div>
+    </div>
+    <div style="margin-top:10px"><button class="btn secondary" id="repBtn" type="button">Run report</button></div>
+    <div id="repOut" style="margin-top:12px"></div>
+    <p class="mut">Split math uses money actually collected (Paid) on Done sessions in the period. Split artists: studio share = collected × (100 − artist %) ÷ 100. Flat-rent artists: studio share is the flat monthly rent, prorated by whole months touched by the period (minimum 1 month).</p>
+  </div>
+</section>
+
+<!-- ============ SETTINGS ============ -->
+<section class="tab" id="tab-help">
+  <h2>Help</h2>
+  <div class="panel">
+    <h3 style="margin-top:0">What InkBook does</h3>
+    <p class="mut">InkBook is a tattoo studio's day book: <b>Day Book</b> runs today's sessions, <b>Pieces</b> tracks each tattoo from consult to healed, <b>Clients</b> holds contact and history, <b>Deposits</b> logs money held against appointments, the <b>Consent Log</b> records which form version each client signed and when, and <b>Artists &amp; Rent</b> splits station rent and commissions. The Dashboard pulls the day together.</p>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0">Where your data lives</h3>
+    <p class="mut">Records live only in this browser on this device — no account, no cloud, nothing uploaded. Back up from Settings &amp; Backup → <b>Export backup (JSON)</b>; if this device is lost, the book is gone without a backup. Import backup restores that file on any device. Export weekly.</p>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0">Honest limits</h3>
+    <p class="mut">InkBook <b>records</b> consent forms, deposits, and sessions — it does not collect signatures, process payments, or send reminders. Signed paper/digital forms stay wherever you file them today; this is the log that proves they exist. It is a record-keeping aid, not legal or health-department advice: your consent forms and studio practices still have to satisfy your local rules.</p>
+  </div>
+</section>
+<section class="tab" id="tab-settings">
+  <h2>Settings &amp; backup</h2>
+  <div class="panel">
+    <h3 style="margin-top:0">Studio</h3>
+    <form id="studioForm">
+      <div class="grid">
+        <div><label for="studioName">Studio name</label><input type="text" id="studioName" placeholder="Blackline Tattoo"></div>
+        <div><label for="studioFormVer">Current consent form version</label><input type="text" id="studioFormVer" placeholder="v2026.1"></div>
+        <div class="full"><label for="studioPolicy">Deposit policy (shown on the Deposits tab)</label><textarea id="studioPolicy" placeholder="Deposits are non-refundable. One free reschedule with 48+ hours notice; inside 48 hours or a no-show forfeits the deposit."></textarea></div>
+      </div>
+      <div style="margin-top:12px"><button class="btn" type="submit">Save settings</button></div>
+    </form>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0">Backup &amp; restore</h3>
+    <p class="mut">Your whole book — clients, consent log, deposits, pieces, sessions, artists — is one file you own. Export regularly; if this device is lost, the book is gone without a backup.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn secondary" id="exportBtn" type="button">Export backup (JSON)</button>
+      <label class="btn secondary" style="display:inline-flex;align-items:center;cursor:pointer">Import backup<input type="file" id="importFile" accept=".json,application/json" style="display:none"></label>
+    </div>
+    <h3>Danger zone</h3>
+    <p class="mut">Demo data is loaded so you can see the book working. Clearing it empties every record (artists, clients, everything) and keeps your studio settings.</p>
+    <button class="btn danger" id="clearDemoBtn" type="button">Clear all data &amp; start fresh</button>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0">Honest limits</h3>
+    <p class="mut">InkBook <b>records</b> consent forms, deposits, and sessions — it does not collect signatures, process payments, or send reminders. Signed paper/digital forms stay wherever you file them today; this is the log that proves they exist. Records live only in this browser on this device — export a backup weekly.</p>
+  </div>
+<div id="legalSection"></div>
+</section>
+</main>
+<footer>InkBook — one file, no account, no subscription. Your studio's records never leave this device.</footer>
+<div id="printArea"></div>
+
+<script>
+"use strict";
+var LS_KEY = "inkbook-v1";
+var state = null;
+var idCounter = 0;
+
+function uid(){ idCounter += 1; return "id" + Date.now().toString(36) + idCounter.toString(36) + Math.floor(Math.random()*1e6).toString(36); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function num(v){ var n = parseFloat(v); return isFinite(n) ? n : 0; }
+function money(n){ var v = num(n); var neg = v < 0; v = Math.abs(v); return (neg?"-$":"$") + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+function todayISO(){ var d = new Date(); return isoOf(d); }
+function isoOf(d){ var m = String(d.getMonth()+1).padStart(2,"0"); var day = String(d.getDate()).padStart(2,"0"); return d.getFullYear()+"-"+m+"-"+day; }
+function addDays(iso, n){ var d = new Date(iso+"T12:00:00"); d.setDate(d.getDate()+n); return isoOf(d); }
+function fmtDate(iso){ if(!iso) return "—"; var d = new Date(iso+"T12:00:00"); if(isNaN(d)) return esc(iso); return d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}); }
+function ageOn(dobIso, onIso){ if(!dobIso) return null; var b = new Date(dobIso+"T12:00:00"), o = new Date((onIso||todayISO())+"T12:00:00"); if(isNaN(b)||isNaN(o)) return null; var a = o.getFullYear()-b.getFullYear(); var m = o.getMonth()-b.getMonth(); if(m<0 || (m===0 && o.getDate()<b.getDate())) a--; return a; }
+function showErr(t){ var e=document.getElementById("errBox"); e.textContent=t; e.style.display="block"; var m=document.getElementById("msgBox"); m.style.display="none"; }
+function showMsg(t){ var m=document.getElementById("msgBox"); m.textContent=t; m.style.display="block"; var e=document.getElementById("errBox"); e.style.display="none"; }
+function clearNotes(){ document.getElementById("errBox").style.display="none"; document.getElementById("msgBox").style.display="none"; }
+
+function blankState(){
+  return {
+    studio: { name:"", formVersion:"v2026.1", policy:"Deposits are non-refundable. One free reschedule with 48+ hours notice; rescheduling inside 48 hours or a no-show forfeits the deposit." },
+    artists: [], clients: [], consents: [], deposits: [], pieces: [], sessions: []
+  };
+}
+
+function seedData(){
+  var s = blankState();
+  var t = todayISO();
+  s.studio.name = "Blackline Tattoo (demo)";
+  var aMaya = uid(), aDeshawn = uid(), aRiley = uid();
+  s.artists = [
+    {id:aMaya, name:"Maya Chen", role:"Owner", rentType:"split", artistPct:70, flatRent:0, notes:"Station 1"},
+    {id:aDeshawn, name:"Deshawn Carter", role:"Resident artist", rentType:"split", artistPct:60, flatRent:0, notes:"Station 2, Tue–Sat"},
+    {id:aRiley, name:"Riley Okafor", role:"Piercer", rentType:"flat", artistPct:100, flatRent:600, notes:"Piercing room, Wed–Sun"}
+  ];
+  var cJordan = uid(), cSam = uid(), cPriya = uid(), cTom = uid();
+  s.clients = [
+    {id:cJordan, name:"Jordan Alvarez", phone:"555-014-2288", email:"jordan.a@example.com", dob:"1996-04-12", notes:"Prefers morning sittings."},
+    {id:cSam, name:"Sam Whitfield", phone:"555-011-9034", email:"", dob:"1989-11-03", notes:"Latex sensitivity — nitrile gloves only."},
+    {id:cPriya, name:"Priya Nair", phone:"555-017-5510", email:"priya.n@example.com", dob:"2001-07-25", notes:"First tattoo — walk through aftercare slowly."},
+    {id:cTom, name:"Tom Beckett", phone:"555-010-7741", email:"tom.b@example.com", dob:"1984-02-19", notes:""}
+  ];
+  s.consents = [
+    {id:uid(), clientId:cJordan, formName:"Tattoo Consent & Release", version:"v2026.1", dateSigned:addDays(t,-40), idChecked:true, method:"Paper — filed in cabinet", notes:""},
+    {id:uid(), clientId:cSam, formName:"Tattoo Consent & Release", version:"v2025.2", dateSigned:addDays(t,-95), idChecked:true, method:"Paper — filed in cabinet", notes:"Signed under previous form version."},
+    {id:uid(), clientId:cPriya, formName:"Piercing Consent & Release", version:"v2026.1", dateSigned:addDays(t,-6), idChecked:true, method:"Tablet — signed on device", notes:""}
+    // Tom Beckett deliberately has NO consent on file — dashboard flags him.
+  ];
+  var pKoi = uid(), pMoth = uid(), pHelix = uid();
+  s.pieces = [
+    {id:pKoi, clientId:cJordan, artistId:aMaya, title:"Koi and peony full sleeve", placement:"Left arm, shoulder to wrist", style:"Japanese traditional, color", quotedTotal:1500, plannedSessions:5, status:"in-progress", notes:"Healed photos on file for sessions 1–2; color packing next."},
+    {id:pMoth, clientId:cSam, artistId:aDeshawn, title:"Death-head moth sternum piece", placement:"Sternum / underbust", style:"Blackwork, dotwork", quotedTotal:650, plannedSessions:2, status:"in-progress", notes:""},
+    {id:pHelix, clientId:cPriya, artistId:aRiley, title:"Double helix piercing", placement:"Right ear", style:"Piercing", quotedTotal:90, plannedSessions:1, status:"complete", notes:"Jewelry: titanium, 16g."}
+  ];
+  s.deposits = [
+    {id:uid(), clientId:cJordan, pieceId:pKoi, amount:200, date:addDays(t,-40), method:"Card", status:"applied", note:"Applied to sleeve session 1."},
+    {id:uid(), clientId:cJordan, pieceId:pKoi, amount:100, date:addDays(t,-3), method:"Venmo", status:"held", note:"Holds session 3 slot."},
+    {id:uid(), clientId:cSam, pieceId:pMoth, amount:150, date:addDays(t,-20), method:"Cash", status:"held", note:""},
+    {id:uid(), clientId:cTom, pieceId:"", amount:75, date:addDays(t,-12), method:"Card", status:"forfeited", note:"No-show inside 48h — forfeited per policy."},
+    {id:uid(), clientId:cPriya, pieceId:pHelix, amount:40, date:addDays(t,-6), method:"Card", status:"refunded", note:"Piercing deposit refunded — service under shop minimum."}
+  ];
+  s.sessions = [
+    {id:uid(), pieceId:pKoi, clientId:cJordan, artistId:aMaya, date:addDays(t,-40), time:"10:00", hours:3, charge:400, paid:400, status:"done", healed:"Healed photo taken — lines settled clean.", notes:"Outline complete."},
+    {id:uid(), pieceId:pKoi, clientId:cJordan, artistId:aMaya, date:addDays(t,-18), time:"10:00", hours:3, charge:400, paid:400, status:"done", healed:"Healed photo taken.", notes:"Black shading done."},
+    {id:uid(), pieceId:pKoi, clientId:cJordan, artistId:aMaya, date:t, time:"11:00", hours:3.5, charge:450, paid:0, status:"booked", healed:"", notes:"Color packing — koi body."},
+    {id:uid(), pieceId:pMoth, clientId:cSam, artistId:aDeshawn, date:addDays(t,-9), time:"13:00", hours:2.5, charge:350, paid:350, status:"done", healed:"", notes:"Linework + dotwork base."},
+    {id:uid(), pieceId:pMoth, clientId:cSam, artistId:aDeshawn, date:addDays(t,4), time:"13:00", hours:2, charge:300, paid:0, status:"booked", healed:"", notes:"Finish shading."},
+    {id:uid(), pieceId:pHelix, clientId:cPriya, artistId:aRiley, date:addDays(t,-6), time:"15:30", hours:0.5, charge:90, paid:90, status:"done", healed:"", notes:"Double helix, titanium studs."},
+    {id:uid(), pieceId:"", clientId:cTom, artistId:aDeshawn, date:addDays(t,-12), time:"12:00", hours:2, charge:250, paid:0, status:"noshow", healed:"", notes:"No-show — deposit forfeited."},
+    {id:uid(), pieceId:"", clientId:cPriya, artistId:aRiley, date:t, time:"16:00", hours:0.5, charge:60, paid:0, status:"booked", healed:"", notes:"Downsize jewelry check."}
+  ];
+  return s;
+}
+
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){ showErr("Could not save — browser storage is full or blocked. Export a backup now."); } }
+function load(){
+  try{
+    var raw = localStorage.getItem(LS_KEY);
+    if(raw){ var p = JSON.parse(raw); if(p && typeof p === "object"){ state = sanitizeState(p); return; } }
+  }catch(e){ /* fall through to seed */ }
+  state = seedData(); save();
+}
+function sanitizeState(p){
+  var s = blankState();
+  if(p.studio && typeof p.studio === "object"){
+    s.studio.name = String(p.studio.name||""); s.studio.formVersion = String(p.studio.formVersion||"v2026.1"); s.studio.policy = String(p.studio.policy||"");
+  }
+  function arr(key, fn){ var out=[]; if(Array.isArray(p[key])){ p[key].forEach(function(r){ if(r && typeof r==="object"){ var v = fn(r); if(v) out.push(v); } }); } return out; }
+  s.artists = arr("artists", function(r){ return {id:String(r.id||uid()), name:String(r.name||""), role:String(r.role||"Resident artist"), rentType: r.rentType==="flat"?"flat":"split", artistPct: Math.min(100, Math.max(0, num(r.artistPct))), flatRent: Math.max(0, num(r.flatRent)), notes:String(r.notes||"")}; });
+  s.clients = arr("clients", function(r){ return {id:String(r.id||uid()), name:String(r.name||""), phone:String(r.phone||""), email:String(r.email||""), dob:String(r.dob||""), notes:String(r.notes||"")}; });
+  s.consents = arr("consents", function(r){ return {id:String(r.id||uid()), clientId:String(r.clientId||""), formName:String(r.formName||"Tattoo Consent & Release"), version:String(r.version||""), dateSigned:String(r.dateSigned||""), idChecked: !!r.idChecked, method:String(r.method||""), notes:String(r.notes||"")}; });
+  s.deposits = arr("deposits", function(r){ var st=["held","applied","forfeited","refunded"].indexOf(r.status)>=0?r.status:"held"; return {id:String(r.id||uid()), clientId:String(r.clientId||""), pieceId:String(r.pieceId||""), amount: Math.max(0, num(r.amount)), date:String(r.date||""), method:String(r.method||"Card"), status:st, note:String(r.note||"")}; });
+  s.pieces = arr("pieces", function(r){ var st=["consult","in-progress","complete","paused"].indexOf(r.status)>=0?r.status:"consult"; return {id:String(r.id||uid()), clientId:String(r.clientId||""), artistId:String(r.artistId||""), title:String(r.title||""), placement:String(r.placement||""), style:String(r.style||""), quotedTotal: Math.max(0, num(r.quotedTotal)), plannedSessions: Math.max(0, Math.round(num(r.plannedSessions))), status:st, notes:String(r.notes||"")}; });
+  s.sessions = arr("sessions", function(r){ var st=["booked","done","noshow","cancelled"].indexOf(r.status)>=0?r.status:"booked"; return {id:String(r.id||uid()), pieceId:String(r.pieceId||""), clientId:String(r.clientId||""), artistId:String(r.artistId||""), date:String(r.date||""), time:String(r.time||""), hours: Math.max(0, num(r.hours)), charge: Math.max(0, num(r.charge)), paid: Math.max(0, num(r.paid)), status:st, healed:String(r.healed||""), notes:String(r.notes||"")}; });
+  s.legal = sanitizeLegal(p.legal);
+  return s;
+}
+
+/* ---- lookups ---- */
+function byId(list, id){ for(var i=0;i<list.length;i++){ if(list[i].id===id) return list[i]; } return null; }
+function clientName(id){ var c = byId(state.clients, id); return c ? c.name : "(client deleted)"; }
+function artistName(id){ var a = byId(state.artists, id); return a ? a.name : "(artist deleted)"; }
+function pieceTitle(id){ var p = byId(state.pieces, id); return p ? p.title : ""; }
+
+/* ---- derived math (single source of truth) ---- */
+function depositsHeld(clientId){
+  var total = 0;
+  state.deposits.forEach(function(d){ if(d.status==="held" && (!clientId || d.clientId===clientId)) total += num(d.amount); });
+  return total;
+}
+function depositsByStatus(status){
+  var total = 0;
+  state.deposits.forEach(function(d){ if(d.status===status) total += num(d.amount); });
+  return total;
+}
+function pieceSessions(pieceId){ return state.sessions.filter(function(x){ return x.pieceId===pieceId; }); }
+function pieceDoneSessions(pieceId){ return pieceSessions(pieceId).filter(function(x){ return x.status==="done"; }); }
+function piecePaidIn(piece){
+  var total = 0;
+  state.deposits.forEach(function(d){ if(d.pieceId===piece.id && d.status==="applied") total += num(d.amount); });
+  pieceDoneSessions(piece.id).forEach(function(x){ total += num(x.paid); });
+  return total;
+}
+function pieceBalance(piece){ return num(piece.quotedTotal) - piecePaidIn(piece); }
+function latestConsent(clientId){
+  var best = null;
+  state.consents.forEach(function(c){ if(c.clientId===clientId){ if(!best || c.dateSigned > best.dateSigned) best = c; } });
+  return best;
+}
+function clientHasWork(clientId){
+  return state.sessions.some(function(x){ return x.clientId===clientId && x.status!=="cancelled"; }) ||
+         state.pieces.some(function(p){ return p.clientId===clientId; });
+}
+function collectedInRange(from, to){
+  var total = 0;
+  state.sessions.forEach(function(x){ if(x.status==="done" && x.date>=from && x.date<=to) total += num(x.paid); });
+  return total;
+}
+
+/* ---- tabs ---- */
+function activateTab(name){
+  var btns = document.querySelectorAll("#tabs button");
+  btns.forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-tab")===name); });
+  document.querySelectorAll("section.tab").forEach(function(s){ s.classList.toggle("active", s.id==="tab-"+name); });
+  clearNotes();
+  renderAll();
+}
+document.getElementById("tabs").addEventListener("click", function(ev){
+  var b = ev.target.closest("button[data-tab]"); if(!b) return;
+  activateTab(b.getAttribute("data-tab"));
+});
+
+/* ---- dropdown builders ---- */
+function fillSelect(el, items, includeBlank, blankLabel, selectedId){
+  var cur = selectedId!=null ? selectedId : el.value;
+  el.innerHTML = "";
+  if(includeBlank){ var o=document.createElement("option"); o.value=""; o.textContent=blankLabel||"— none —"; el.appendChild(o); }
+  items.forEach(function(it){ var o=document.createElement("option"); o.value=it.id; o.textContent=it.label; el.appendChild(o); });
+  if(cur && items.some(function(it){ return it.id===cur; })) el.value = cur;
+}
+function clientItems(){ return state.clients.slice().sort(function(a,b){ return a.name.localeCompare(b.name); }).map(function(c){ return {id:c.id, label:c.name}; }); }
+function artistItems(){ return state.artists.slice().sort(function(a,b){ return a.name.localeCompare(b.name); }).map(function(a){ return {id:a.id, label:a.name}; }); }
+function pieceItems(clientId){
+  return state.pieces.filter(function(p){ return !clientId || p.clientId===clientId; }).map(function(p){ return {id:p.id, label:p.title + " (" + clientName(p.clientId) + ")"}; });
+}
+function refreshDropdowns(){
+  fillSelect(document.getElementById("sessClient"), clientItems(), false);
+  fillSelect(document.getElementById("sessArtist"), artistItems(), false);
+  fillSelect(document.getElementById("pieceClient"), clientItems(), false);
+  fillSelect(document.getElementById("pieceArtist"), artistItems(), false);
+  fillSelect(document.getElementById("depClient"), clientItems(), false);
+  fillSelect(document.getElementById("consentClient"), clientItems(), false);
+  syncSessPieces(); syncDepPieces();
+}
+function syncSessPieces(){
+  var cid = document.getElementById("sessClient").value;
+  fillSelect(document.getElementById("sessPiece"), pieceItems(cid), true, "— no piece / walk-in —");
+}
+function syncDepPieces(){
+  var cid = document.getElementById("depClient").value;
+  fillSelect(document.getElementById("depPiece"), pieceItems(cid), true, "— not tied to a piece —");
+}
+document.getElementById("sessClient").addEventListener("change", syncSessPieces);
+document.getElementById("depClient").addEventListener("change", syncDepPieces);
+
+/* ---- dashboard ---- */
+function renderDashboard(){
+  var t = todayISO();
+  var held = depositsHeld();
+  var monthStart = t.slice(0,8) + "01";
+  var collected = collectedInRange(monthStart, t);
+  var missing = state.clients.filter(function(c){ return clientHasWork(c.id) && !latestConsent(c.id); });
+  var outstanding = 0;
+  state.pieces.forEach(function(p){ if(p.status!=="complete"){ var b = pieceBalance(p); if(b>0) outstanding += b; } });
+  var cards = [
+    {num: money(held), lbl:"Deposits held right now"},
+    {num: money(collected), lbl:"Collected this month (done sessions)"},
+    {num: money(outstanding), lbl:"Outstanding balances on open pieces"},
+    {num: String(state.clients.length), lbl:"Clients on file"},
+    {num: String(missing.length), lbl:"Clients with work but NO consent logged", alert: missing.length>0}
+  ];
+  document.getElementById("dashCards").innerHTML = cards.map(function(c){
+    return '<div class="card'+(c.alert?" alert":"")+'"><div class="num">'+esc(c.num)+'</div><div class="lbl">'+esc(c.lbl)+'</div></div>';
+  }).join("");
+  var todays = state.sessions.filter(function(x){ return x.date===t; }).sort(function(a,b){ return (a.time||"").localeCompare(b.time||""); });
+  document.getElementById("dashToday").innerHTML = todays.length ? todays.map(function(x){
+    return '<div style="padding:6px 0;border-bottom:1px solid var(--line)"><b>'+esc(x.time||"—")+'</b> · '+esc(clientName(x.clientId))+' — '+esc(pieceTitle(x.pieceId)||"Walk-in / consult")+' · '+esc(artistName(x.artistId))+' <span class="badge '+x.status+'">'+x.status+'</span></div>';
+  }).join("") : '<div class="empty">No sessions booked today.</div>';
+  var att = [];
+  missing.forEach(function(c){ att.push('<div style="padding:5px 0">⚠️ <b>'+esc(c.name)+'</b> has sessions/pieces on file but <b>no consent form logged</b>. Log it in the Consent Log before the next sitting.</div>'); });
+  state.pieces.forEach(function(p){
+    var done = pieceDoneSessions(p.id).length;
+    if(p.status==="in-progress" && p.plannedSessions>0 && done>=p.plannedSessions && pieceBalance(p)>0){
+      att.push('<div style="padding:5px 0">💰 <b>'+esc(p.title)+'</b> ('+esc(clientName(p.clientId))+') has used all '+p.plannedSessions+' planned sessions with '+money(pieceBalance(p))+' still owed — book a finish session or settle up.</div>');
+    }
+  });
+  state.clients.forEach(function(c){
+    var lc = latestConsent(c.id);
+    if(lc && state.studio.formVersion && lc.version && lc.version !== state.studio.formVersion && clientHasWork(c.id)){
+      att.push('<div style="padding:5px 0">📄 <b>'+esc(c.name)+'</b> last signed form version <b>'+esc(lc.version)+'</b>; current version is <b>'+esc(state.studio.formVersion)+'</b> — get a fresh signature at the next visit.</div>');
+    }
+  });
+  document.getElementById("dashAttention").innerHTML = att.length ? att.join("") : '<div class="empty">All clear — every working client has a consent form logged and no piece is over its planned sessions with money owed.</div>';
+}
+
+/* ---- sessions / day book ---- */
+function renderSessions(){
+  var viewDate = document.getElementById("sessDateView").value || todayISO();
+  var day = state.sessions.filter(function(x){ return x.date===viewDate; }).sort(function(a,b){ return (a.time||"").localeCompare(b.time||""); });
+  var byArtist = {};
+  day.forEach(function(x){ (byArtist[x.artistId] = byArtist[x.artistId] || []).push(x); });
+  var html = "";
+  var artistIds = Object.keys(byArtist);
+  if(!day.length){ html = '<div class="empty">No sessions on '+esc(fmtDate(viewDate))+'. Book one below.</div>'; }
+  artistIds.forEach(function(aid){
+    html += '<h3>'+esc(artistName(aid))+'</h3>';
+    byArtist[aid].forEach(function(x){
+      html += '<div style="padding:6px 0;border-bottom:1px solid var(--line)"><b>'+esc(x.time||"—")+'</b> · '+esc(clientName(x.clientId))+' — '+esc(pieceTitle(x.pieceId)||"Walk-in / consult")+' · '+num(x.hours)+'h · charge '+money(x.charge)+' · paid '+money(x.paid)+' <span class="badge '+x.status+'">'+x.status+'</span></div>';
+    });
+  });
+  document.getElementById("dayBookList").innerHTML = html;
+  var rows = state.sessions.slice().sort(function(a,b){ return (b.date+a.time).localeCompare(a.date+b.time); }).slice(0,60);
+  document.querySelector("#sessTable tbody").innerHTML = rows.length ? rows.map(function(x){
+    return '<tr><td>'+esc(fmtDate(x.date))+' '+esc(x.time||"")+'</td><td>'+esc(clientName(x.clientId))+'</td><td>'+esc(pieceTitle(x.pieceId)||"—")+'</td><td>'+esc(artistName(x.artistId))+'</td><td>'+money(x.charge)+'</td><td>'+money(x.paid)+'</td><td><span class="badge '+x.status+'">'+x.status+'</span></td><td><div class="rowbtns"><button class="btn secondary small" data-edit-sess="'+x.id+'" type="button">Edit</button><button class="btn danger small" data-del-sess="'+x.id+'" type="button">Delete</button></div></td></tr>';
+  }).join("") : '<tr><td colspan="8"><div class="empty">No sessions yet.</div></td></tr>';
+}
+document.getElementById("sessDateView").addEventListener("change", renderSessions);
+document.getElementById("sessTodayBtn").addEventListener("click", function(){ document.getElementById("sessDateView").value = todayISO(); renderSessions(); });
+document.getElementById("sessPrintBtn").addEventListener("click", function(){
+  var viewDate = document.getElementById("sessDateView").value || todayISO();
+  var day = state.sessions.filter(function(x){ return x.date===viewDate; }).sort(function(a,b){ return (a.time||"").localeCompare(b.time||""); });
+  var rows = day.map(function(x){
+    return "<tr><td>"+esc(x.time||"—")+"</td><td>"+esc(clientName(x.clientId))+"</td><td>"+esc(pieceTitle(x.pieceId)||"Walk-in / consult")+"</td><td>"+esc(artistName(x.artistId))+"</td><td>"+num(x.hours)+"h</td><td>"+money(x.charge)+"</td><td>"+esc(x.status)+"</td><td>"+esc(x.notes||"")+"</td></tr>";
+  }).join("");
+  document.getElementById("printArea").innerHTML = "<h2>"+esc(state.studio.name||"Studio")+" — Day Sheet, "+esc(fmtDate(viewDate))+"</h2><table><thead><tr><th>Time</th><th>Client</th><th>Piece</th><th>Artist</th><th>Hours</th><th>Charge</th><th>Status</th><th>Notes</th></tr></thead><tbody>"+(rows||'<tr><td colspan="8">No sessions.</td></tr>')+"</tbody></table>";
+  window.print();
+});
+document.getElementById("sessForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var id = document.getElementById("sessId").value;
+  var clientId = document.getElementById("sessClient").value;
+  var artistId = document.getElementById("sessArtist").value;
+  var date = document.getElementById("sessDate").value;
+  if(!clientId){ showErr("Pick a client for the session (add the client first if they're new)."); return; }
+  if(!artistId){ showErr("Pick an artist for the session (add the artist first if needed)."); return; }
+  if(!date){ showErr("A session needs a date."); return; }
+  var rec = {
+    id: id || uid(),
+    pieceId: document.getElementById("sessPiece").value || "",
+    clientId: clientId, artistId: artistId, date: date,
+    time: document.getElementById("sessTime").value || "",
+    hours: Math.max(0, num(document.getElementById("sessHours").value)),
+    charge: Math.max(0, num(document.getElementById("sessCharge").value)),
+    paid: Math.max(0, num(document.getElementById("sessPaid").value)),
+    status: document.getElementById("sessStatus").value,
+    healed: document.getElementById("sessHealed").value.trim(),
+    notes: document.getElementById("sessNotes").value.trim()
+  };
+  if(id){ var i = state.sessions.findIndex(function(x){ return x.id===id; }); if(i>=0) state.sessions[i]=rec; }
+  else state.sessions.push(rec);
+  save(); resetSessForm(); renderAll(); showMsg("Session saved.");
+});
+function resetSessForm(){
+  document.getElementById("sessForm").reset();
+  document.getElementById("sessId").value = "";
+  document.getElementById("sessDate").value = todayISO();
+  document.getElementById("sessFormTitle").textContent = "Book a session";
+  document.getElementById("sessCancelEdit").style.display = "none";
+  syncSessPieces();
+}
+document.getElementById("sessCancelEdit").addEventListener("click", resetSessForm);
+document.querySelector("#sessTable").addEventListener("click", function(ev){
+  var eb = ev.target.closest("[data-edit-sess]"), db = ev.target.closest("[data-del-sess]");
+  if(eb){
+    var x = byId(state.sessions, eb.getAttribute("data-edit-sess")); if(!x) return;
+    document.getElementById("sessId").value = x.id;
+    document.getElementById("sessClient").value = x.clientId; syncSessPieces();
+    document.getElementById("sessPiece").value = x.pieceId || "";
+    document.getElementById("sessArtist").value = x.artistId;
+    document.getElementById("sessDate").value = x.date;
+    document.getElementById("sessTime").value = x.time || "";
+    document.getElementById("sessHours").value = x.hours || "";
+    document.getElementById("sessCharge").value = x.charge || "";
+    document.getElementById("sessPaid").value = x.paid || "";
+    document.getElementById("sessStatus").value = x.status;
+    document.getElementById("sessHealed").value = x.healed || "";
+    document.getElementById("sessNotes").value = x.notes || "";
+    document.getElementById("sessFormTitle").textContent = "Edit session";
+    document.getElementById("sessCancelEdit").style.display = "";
+    window.scrollTo(0,0);
+  }
+  if(db){
+    var y = byId(state.sessions, db.getAttribute("data-del-sess")); if(!y) return;
+    if(confirm("Delete this session ("+fmtDate(y.date)+", "+clientName(y.clientId)+")? This cannot be undone.")){
+      state.sessions = state.sessions.filter(function(z){ return z.id!==y.id; });
+      save(); renderAll(); showMsg("Session deleted.");
+    }
+  }
+});
+
+/* ---- pieces ---- */
+function renderPieces(){
+  var list = state.pieces.slice().sort(function(a,b){
+    var order = {"in-progress":0,"consult":1,"paused":2,"complete":3};
+    return (order[a.status]-order[b.status]) || a.title.localeCompare(b.title);
+  });
+  document.getElementById("pieceList").innerHTML = list.length ? list.map(function(p){
+    var done = pieceDoneSessions(p.id).length;
+    var paidIn = piecePaidIn(p);
+    var bal = pieceBalance(p);
+    var pct = p.plannedSessions>0 ? Math.min(100, Math.round(done/p.plannedSessions*100)) : 0;
+    var sess = pieceSessions(p.id).slice().sort(function(a,b){ return (a.date+a.time).localeCompare(b.date+b.time); });
+    var sessRows = sess.map(function(x){
+      return '<div class="mut" style="padding:3px 0">· '+esc(fmtDate(x.date))+' — '+num(x.hours)+'h, charge '+money(x.charge)+', paid '+money(x.paid)+' <span class="badge '+x.status+'">'+x.status+'</span>'+(x.healed?' <span title="Healed-photo note">📸 '+esc(x.healed)+'</span>':'')+'</div>';
+    }).join("");
+    return '<div class="panel"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="font-size:16px">'+esc(p.title)+'</b><span class="badge '+(p.status==="complete"?"applied":p.status==="in-progress"?"held":"refunded")+'">'+esc(p.status)+'</span></div>'
+      + '<div class="mut">'+esc(clientName(p.clientId))+' · '+esc(artistName(p.artistId))+(p.placement?' · '+esc(p.placement):"")+(p.style?' · '+esc(p.style):"")+'</div>'
+      + '<div style="margin-top:8px">Quoted <b>'+money(p.quotedTotal)+'</b> · Paid in (deposits applied + sessions) <b>'+money(paidIn)+'</b> · Balance <b>'+money(bal)+'</b></div>'
+      + '<div class="mut">Sessions done: '+done+(p.plannedSessions? ' of '+p.plannedSessions+' planned':'')+'</div>'
+      + (p.plannedSessions? '<div class="progress"><div style="width:'+pct+'%"></div></div>' : '')
+      + (sessRows? '<div style="margin-top:8px">'+sessRows+'</div>' : '')
+      + (p.notes? '<div class="mut" style="margin-top:8px">'+esc(p.notes)+'</div>' : '')
+      + '<div class="rowbtns" style="margin-top:10px"><button class="btn secondary small" data-edit-piece="'+p.id+'" type="button">Edit</button><button class="btn danger small" data-del-piece="'+p.id+'" type="button">Delete</button></div></div>';
+  }).join("") : '<div class="empty">No pieces yet. Add the first one above.</div>';
+}
+document.getElementById("pieceForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var id = document.getElementById("pieceId").value;
+  var title = document.getElementById("pieceTitle").value.trim();
+  var clientId = document.getElementById("pieceClient").value;
+  var artistId = document.getElementById("pieceArtist").value;
+  if(!title){ showErr("A piece needs a design/title."); return; }
+  if(!clientId){ showErr("Pick the client for this piece."); return; }
+  if(!artistId){ showErr("Pick the artist for this piece."); return; }
+  var rec = {
+    id: id || uid(), clientId: clientId, artistId: artistId, title: title,
+    placement: document.getElementById("piecePlacement").value.trim(),
+    style: document.getElementById("pieceStyle").value.trim(),
+    quotedTotal: Math.max(0, num(document.getElementById("pieceQuoted").value)),
+    plannedSessions: Math.max(0, Math.round(num(document.getElementById("piecePlanned").value))),
+    status: document.getElementById("pieceStatus").value,
+    notes: document.getElementById("pieceNotes").value.trim()
+  };
+  if(id){ var i = state.pieces.findIndex(function(x){ return x.id===id; }); if(i>=0) state.pieces[i]=rec; }
+  else state.pieces.push(rec);
+  save(); resetPieceForm(); renderAll(); showMsg("Piece saved.");
+});
+function resetPieceForm(){
+  document.getElementById("pieceForm").reset();
+  document.getElementById("pieceId").value = "";
+  document.getElementById("pieceFormTitle").textContent = "New piece";
+  document.getElementById("pieceCancelEdit").style.display = "none";
+}
+document.getElementById("pieceCancelEdit").addEventListener("click", resetPieceForm);
+document.getElementById("pieceList").addEventListener("click", function(ev){
+  var eb = ev.target.closest("[data-edit-piece]"), db = ev.target.closest("[data-del-piece]");
+  if(eb){
+    var p = byId(state.pieces, eb.getAttribute("data-edit-piece")); if(!p) return;
+    document.getElementById("pieceId").value = p.id;
+    document.getElementById("pieceClient").value = p.clientId;
+    document.getElementById("pieceArtist").value = p.artistId;
+    document.getElementById("pieceTitle").value = p.title;
+    document.getElementById("piecePlacement").value = p.placement || "";
+    document.getElementById("pieceStyle").value = p.style || "";
+    document.getElementById("pieceQuoted").value = p.quotedTotal || "";
+    document.getElementById("piecePlanned").value = p.plannedSessions || "";
+    document.getElementById("pieceStatus").value = p.status;
+    document.getElementById("pieceNotes").value = p.notes || "";
+    document.getElementById("pieceFormTitle").textContent = "Edit piece";
+    document.getElementById("pieceCancelEdit").style.display = "";
+    activateTab("pieces"); window.scrollTo(0,0);
+  }
+  if(db){
+    var q = byId(state.pieces, db.getAttribute("data-del-piece")); if(!q) return;
+    if(confirm("Delete piece \""+q.title+"\"? Its sessions stay in the day book but lose the piece link.")){
+      state.pieces = state.pieces.filter(function(z){ return z.id!==q.id; });
+      state.sessions.forEach(function(x){ if(x.pieceId===q.id) x.pieceId=""; });
+      state.deposits.forEach(function(d){ if(d.pieceId===q.id) d.pieceId=""; });
+      save(); renderAll(); showMsg("Piece deleted.");
+    }
+  }
+});
+
+/* ---- clients ---- */
+function renderClients(){
+  var q = (document.getElementById("clientSearch").value || "").toLowerCase();
+  var rows = state.clients.filter(function(c){
+    return !q || (c.name+" "+c.phone+" "+c.email).toLowerCase().indexOf(q)>=0;
+  }).sort(function(a,b){ return a.name.localeCompare(b.name); });
+  document.querySelector("#clientTable tbody").innerHTML = rows.length ? rows.map(function(c){
+    var lc = latestConsent(c.id);
+    var age = ageOn(c.dob);
+    var consentCell = lc ? '<span class="badge ok">on file '+esc(fmtDate(lc.dateSigned))+'</span>' : (clientHasWork(c.id) ? '<span class="badge missing">MISSING</span>' : '<span class="mut">none yet</span>');
+    var pieceCount = state.pieces.filter(function(p){ return p.clientId===c.id; }).length;
+    return '<tr><td><b>'+esc(c.name)+'</b>'+(c.notes?'<div class="mut">'+esc(c.notes)+'</div>':"")+'</td><td>'+esc(c.phone||"")+(c.email?'<div class="mut">'+esc(c.email)+'</div>':"")+'</td><td>'+(age==null?'<span class="mut">no DOB</span>':(age>=18?'<span class="badge ok">'+age+'</span>':'<span class="badge missing">'+age+' — UNDER 18</span>'))+'</td><td>'+consentCell+'</td><td>'+money(depositsHeld(c.id))+'</td><td>'+pieceCount+'</td><td><div class="rowbtns"><button class="btn secondary small" data-edit-client="'+c.id+'" type="button">Edit</button><button class="btn secondary small" data-print-client="'+c.id+'" type="button">Print record</button><button class="btn danger small" data-del-client="'+c.id+'" type="button">Delete</button></div></td></tr>';
+  }).join("") : '<tr><td colspan="7"><div class="empty">No clients match.</div></td></tr>';
+}
+document.getElementById("clientSearch").addEventListener("input", renderClients);
+document.getElementById("clientForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var id = document.getElementById("clientId").value;
+  var name = document.getElementById("clientName").value.trim();
+  if(!name){ showErr("A client needs a name."); return; }
+  var rec = {
+    id: id || uid(), name: name,
+    phone: document.getElementById("clientPhone").value.trim(),
+    email: document.getElementById("clientEmail").value.trim(),
+    dob: document.getElementById("clientDob").value || "",
+    notes: document.getElementById("clientNotes").value.trim()
+  };
+  if(id){ var i = state.clients.findIndex(function(x){ return x.id===id; }); if(i>=0) state.clients[i]=rec; }
+  else state.clients.push(rec);
+  save(); resetClientForm(); renderAll(); showMsg("Client saved.");
+});
+function resetClientForm(){
+  document.getElementById("clientForm").reset();
+  document.getElementById("clientId").value = "";
+  document.getElementById("clientFormTitle").textContent = "New client";
+  document.getElementById("clientCancelEdit").style.display = "none";
+}
+document.getElementById("clientCancelEdit").addEventListener("click", resetClientForm);
+document.querySelector("#clientTable").addEventListener("click", function(ev){
+  var eb = ev.target.closest("[data-edit-client]"), db = ev.target.closest("[data-del-client]"), pb = ev.target.closest("[data-print-client]");
+  if(eb){
+    var c = byId(state.clients, eb.getAttribute("data-edit-client")); if(!c) return;
+    document.getElementById("clientId").value = c.id;
+    document.getElementById("clientName").value = c.name;
+    document.getElementById("clientPhone").value = c.phone || "";
+    document.getElementById("clientEmail").value = c.email || "";
+    document.getElementById("clientDob").value = c.dob || "";
+    document.getElementById("clientNotes").value = c.notes || "";
+    document.getElementById("clientFormTitle").textContent = "Edit client";
+    document.getElementById("clientCancelEdit").style.display = "";
+    window.scrollTo(0,0);
+  }
+  if(db){
+    var d = byId(state.clients, db.getAttribute("data-del-client")); if(!d) return;
+    if(confirm("Delete client "+d.name+" and ALL their consent logs, deposits, pieces, and sessions? This cannot be undone. (Export a backup first if unsure.)")){
+      state.clients = state.clients.filter(function(z){ return z.id!==d.id; });
+      state.consents = state.consents.filter(function(z){ return z.clientId!==d.id; });
+      state.deposits = state.deposits.filter(function(z){ return z.clientId!==d.id; });
+      state.pieces = state.pieces.filter(function(z){ return z.clientId!==d.id; });
+      state.sessions = state.sessions.filter(function(z){ return z.clientId!==d.id; });
+      save(); renderAll(); showMsg("Client and their records deleted.");
+    }
+  }
+  if(pb){
+    var p = byId(state.clients, pb.getAttribute("data-print-client")); if(!p) return;
+    printClientRecord(p);
+  }
+});
+function printClientRecord(c){
+  var consents = state.consents.filter(function(x){ return x.clientId===c.id; }).sort(function(a,b){ return a.dateSigned.localeCompare(b.dateSigned); });
+  var deps = state.deposits.filter(function(x){ return x.clientId===c.id; }).sort(function(a,b){ return a.date.localeCompare(b.date); });
+  var pieces = state.pieces.filter(function(x){ return x.clientId===c.id; });
+  var sess = state.sessions.filter(function(x){ return x.clientId===c.id; }).sort(function(a,b){ return (a.date+a.time).localeCompare(b.date+b.time); });
+  var h = "<h2>"+esc(state.studio.name||"Studio")+" — Client Record</h2>";
+  h += "<p><b>"+esc(c.name)+"</b> · "+esc(c.phone||"")+" · "+esc(c.email||"")+" · DOB: "+esc(c.dob?fmtDate(c.dob):"not recorded")+"</p>";
+  if(c.notes) h += "<p>Notes: "+esc(c.notes)+"</p>";
+  h += "<h3>Consent forms on file</h3>";
+  h += consents.length ? "<table><thead><tr><th>Date signed</th><th>Form</th><th>Version</th><th>ID checked</th><th>Filed</th></tr></thead><tbody>"+consents.map(function(x){ return "<tr><td>"+esc(fmtDate(x.dateSigned))+"</td><td>"+esc(x.formName)+"</td><td>"+esc(x.version||"")+"</td><td>"+(x.idChecked?"Yes":"No")+"</td><td>"+esc(x.method||"")+"</td></tr>"; }).join("")+"</tbody></table>" : "<p>None logged.</p>";
+  h += "<h3>Deposits</h3>";
+  h += deps.length ? "<table><thead><tr><th>Date</th><th>Amount</th><th>Status</th><th>Piece</th></tr></thead><tbody>"+deps.map(function(x){ return "<tr><td>"+esc(fmtDate(x.date))+"</td><td>"+money(x.amount)+"</td><td>"+esc(x.status)+"</td><td>"+esc(pieceTitle(x.pieceId)||"—")+"</td></tr>"; }).join("")+"</tbody></table><p>Currently held: <b>"+money(depositsHeld(c.id))+"</b></p>" : "<p>None.</p>";
+  h += "<h3>Pieces</h3>";
+  h += pieces.length ? pieces.map(function(p){ return "<p><b>"+esc(p.title)+"</b> — quoted "+money(p.quotedTotal)+", paid in "+money(piecePaidIn(p))+", balance "+money(pieceBalance(p))+", sessions done "+pieceDoneSessions(p.id).length+" of "+(p.plannedSessions||"—")+" planned, status "+esc(p.status)+"</p>"; }).join("") : "<p>None.</p>";
+  h += "<h3>Sessions</h3>";
+  h += sess.length ? "<table><thead><tr><th>Date</th><th>Piece</th><th>Artist</th><th>Charge</th><th>Paid</th><th>Status</th></tr></thead><tbody>"+sess.map(function(x){ return "<tr><td>"+esc(fmtDate(x.date))+"</td><td>"+esc(pieceTitle(x.pieceId)||"—")+"</td><td>"+esc(artistName(x.artistId))+"</td><td>"+money(x.charge)+"</td><td>"+money(x.paid)+"</td><td>"+esc(x.status)+"</td></tr>"; }).join("")+"</tbody></table>" : "<p>None.</p>";
+  document.getElementById("printArea").innerHTML = h;
+  window.print();
+}
+
+/* ---- deposits ---- */
+function renderDeposits(){
+  var cards = [
+    {num: money(depositsHeld()), lbl:"Currently held"},
+    {num: money(depositsByStatus("applied")), lbl:"Applied to pieces (all time)"},
+    {num: money(depositsByStatus("forfeited")), lbl:"Forfeited under policy (all time)"},
+    {num: money(depositsByStatus("refunded")), lbl:"Refunded (all time)"}
+  ];
+  document.getElementById("depCards").innerHTML = cards.map(function(c){
+    return '<div class="card"><div class="num">'+esc(c.num)+'</div><div class="lbl">'+esc(c.lbl)+'</div></div>';
+  }).join("");
+  document.getElementById("depPolicyNote").textContent = state.studio.policy ? ("Studio deposit policy: " + state.studio.policy) : "";
+  var rows = state.deposits.slice().sort(function(a,b){ return b.date.localeCompare(a.date); });
+  document.querySelector("#depTable tbody").innerHTML = rows.length ? rows.map(function(d){
+    return '<tr><td>'+esc(fmtDate(d.date))+'</td><td>'+esc(clientName(d.clientId))+'</td><td>'+esc(pieceTitle(d.pieceId)||"—")+'</td><td>'+money(d.amount)+'</td><td>'+esc(d.method)+'</td><td><span class="badge '+d.status+'">'+d.status+'</span>'+(d.note?'<div class="mut">'+esc(d.note)+'</div>':"")+'</td><td><div class="rowbtns"><button class="btn secondary small" data-edit-dep="'+d.id+'" type="button">Edit</button><button class="btn danger small" data-del-dep="'+d.id+'" type="button">Delete</button></div></td></tr>';
+  }).join("") : '<tr><td colspan="7"><div class="empty">No deposits logged yet.</div></td></tr>';
+}
+document.getElementById("depForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var id = document.getElementById("depId").value;
+  var clientId = document.getElementById("depClient").value;
+  var amount = num(document.getElementById("depAmount").value);
+  var date = document.getElementById("depDate").value;
+  if(!clientId){ showErr("Pick the client who left the deposit."); return; }
+  if(!(amount>0)){ showErr("A deposit needs an amount above $0."); return; }
+  if(!date){ showErr("A deposit needs a date."); return; }
+  var rec = {
+    id: id || uid(), clientId: clientId,
+    pieceId: document.getElementById("depPiece").value || "",
+    amount: Math.max(0, amount), date: date,
+    method: document.getElementById("depMethod").value,
+    status: document.getElementById("depStatus").value,
+    note: document.getElementById("depNote").value.trim()
+  };
+  if(id){ var i = state.deposits.findIndex(function(x){ return x.id===id; }); if(i>=0) state.deposits[i]=rec; }
+  else state.deposits.push(rec);
+  save(); resetDepForm(); renderAll(); showMsg("Deposit saved.");
+});
+function resetDepForm(){
+  document.getElementById("depForm").reset();
+  document.getElementById("depId").value = "";
+  document.getElementById("depDate").value = todayISO();
+  document.getElementById("depFormTitle").textContent = "Take a deposit";
+  document.getElementById("depCancelEdit").style.display = "none";
+  syncDepPieces();
+}
+document.getElementById("depCancelEdit").addEventListener("click", resetDepForm);
+document.querySelector("#depTable").addEventListener("click", function(ev){
+  var eb = ev.target.closest("[data-edit-dep]"), db = ev.target.closest("[data-del-dep]");
+  if(eb){
+    var d = byId(state.deposits, eb.getAttribute("data-edit-dep")); if(!d) return;
+    document.getElementById("depId").value = d.id;
+    document.getElementById("depClient").value = d.clientId; syncDepPieces();
+    document.getElementById("depPiece").value = d.pieceId || "";
+    document.getElementById("depAmount").value = d.amount;
+    document.getElementById("depDate").value = d.date;
+    document.getElementById("depMethod").value = d.method;
+    document.getElementById("depStatus").value = d.status;
+    document.getElementById("depNote").value = d.note || "";
+    document.getElementById("depFormTitle").textContent = "Edit deposit";
+    document.getElementById("depCancelEdit").style.display = "";
+    window.scrollTo(0,0);
+  }
+  if(db){
+    var q = byId(state.deposits, db.getAttribute("data-del-dep")); if(!q) return;
+    if(confirm("Delete this "+money(q.amount)+" deposit record for "+clientName(q.clientId)+"?")){
+      state.deposits = state.deposits.filter(function(z){ return z.id!==q.id; });
+      save(); renderAll(); showMsg("Deposit deleted.");
+    }
+  }
+});
+
+/* ---- consents ---- */
+function renderConsents(){
+  var rows = state.consents.slice().sort(function(a,b){ return b.dateSigned.localeCompare(a.dateSigned); });
+  document.querySelector("#consentTable tbody").innerHTML = rows.length ? rows.map(function(c){
+    return '<tr><td>'+esc(fmtDate(c.dateSigned))+'</td><td>'+esc(clientName(c.clientId))+'</td><td>'+esc(c.formName)+(c.notes?'<div class="mut">'+esc(c.notes)+'</div>':"")+'</td><td>'+esc(c.version||"—")+'</td><td>'+(c.idChecked?'<span class="badge ok">Yes</span>':'<span class="badge warnb">Not recorded</span>')+'</td><td>'+esc(c.method||"")+'</td><td><div class="rowbtns"><button class="btn secondary small" data-edit-consent="'+c.id+'" type="button">Edit</button><button class="btn danger small" data-del-consent="'+c.id+'" type="button">Delete</button></div></td></tr>';
+  }).join("") : '<tr><td colspan="7"><div class="empty">No consent forms logged yet.</div></td></tr>';
+}
+document.getElementById("consentForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var id = document.getElementById("consentId").value;
+  var clientId = document.getElementById("consentClient").value;
+  var date = document.getElementById("consentDate").value;
+  if(!clientId){ showErr("Pick the client who signed."); return; }
+  if(!date){ showErr("Enter the date the form was signed."); return; }
+  var rec = {
+    id: id || uid(), clientId: clientId,
+    formName: document.getElementById("consentFormName").value,
+    version: document.getElementById("consentVersion").value.trim() || state.studio.formVersion || "",
+    dateSigned: date,
+    idChecked: document.getElementById("consentIdChecked").checked,
+    method: document.getElementById("consentMethod").value,
+    notes: document.getElementById("consentNotes").value.trim()
+  };
+  if(id){ var i = state.consents.findIndex(function(x){ return x.id===id; }); if(i>=0) state.consents[i]=rec; }
+  else state.consents.push(rec);
+  save(); resetConsentForm(); renderAll(); showMsg("Consent form logged.");
+});
+function resetConsentForm(){
+  document.getElementById("consentForm").reset();
+  document.getElementById("consentId").value = "";
+  document.getElementById("consentDate").value = todayISO();
+  document.getElementById("consentVersion").value = state.studio.formVersion || "";
+  document.getElementById("consentFormTitle").textContent = "Log a signed form";
+  document.getElementById("consentCancelEdit").style.display = "none";
+}
+document.getElementById("consentCancelEdit").addEventListener("click", resetConsentForm);
+document.querySelector("#consentTable").addEventListener("click", function(ev){
+  var eb = ev.target.closest("[data-edit-consent]"), db = ev.target.closest("[data-del-consent]");
+  if(eb){
+    var c = byId(state.consents, eb.getAttribute("data-edit-consent")); if(!c) return;
+    document.getElementById("consentId").value = c.id;
+    document.getElementById("consentClient").value = c.clientId;
+    document.getElementById("consentFormName").value = c.formName;
+    document.getElementById("consentVersion").value = c.version || "";
+    document.getElementById("consentDate").value = c.dateSigned;
+    document.getElementById("consentIdChecked").checked = !!c.idChecked;
+    document.getElementById("consentMethod").value = c.method;
+    document.getElementById("consentNotes").value = c.notes || "";
+    document.getElementById("consentFormTitle").textContent = "Edit form log";
+    document.getElementById("consentCancelEdit").style.display = "";
+    window.scrollTo(0,0);
+  }
+  if(db){
+    var q = byId(state.consents, db.getAttribute("data-del-consent")); if(!q) return;
+    if(confirm("Delete this consent log entry ("+q.formName+", "+fmtDate(q.dateSigned)+")? Only delete if it was entered by mistake — this log is your proof of signature.")){
+      state.consents = state.consents.filter(function(z){ return z.id!==q.id; });
+      save(); renderAll(); showMsg("Consent log entry deleted.");
+    }
+  }
+});
+document.getElementById("consentPrintBtn").addEventListener("click", function(){
+  var rows = state.consents.slice().sort(function(a,b){ return a.dateSigned.localeCompare(b.dateSigned); }).map(function(c){
+    return "<tr><td>"+esc(fmtDate(c.dateSigned))+"</td><td>"+esc(clientName(c.clientId))+"</td><td>"+esc(c.formName)+"</td><td>"+esc(c.version||"")+"</td><td>"+(c.idChecked?"Yes":"No")+"</td><td>"+esc(c.method||"")+"</td></tr>";
+  }).join("");
+  document.getElementById("printArea").innerHTML = "<h2>"+esc(state.studio.name||"Studio")+" — Consent &amp; Release Form Log</h2><table><thead><tr><th>Date signed</th><th>Client</th><th>Form</th><th>Version</th><th>ID checked</th><th>Filed</th></tr></thead><tbody>"+(rows||'<tr><td colspan="6">No forms logged.</td></tr>')+"</tbody></table>";
+  window.print();
+});
+
+/* ---- artists & split report ---- */
+function monthsTouched(from, to){
+  var f = new Date(from+"T12:00:00"), t = new Date(to+"T12:00:00");
+  if(isNaN(f)||isNaN(t)) return 1;
+  var m = (t.getFullYear()-f.getFullYear())*12 + (t.getMonth()-f.getMonth()) + 1;
+  return Math.max(1, m);
+}
+function artistReport(from, to){
+  return state.artists.map(function(a){
+    var collected = 0, sessions = 0;
+    state.sessions.forEach(function(x){
+      if(x.artistId===a.id && x.status==="done" && x.date>=from && x.date<=to){ collected += num(x.paid); sessions++; }
+    });
+    var studioShare, artistShare;
+    if(a.rentType==="flat"){ studioShare = num(a.flatRent) * monthsTouched(from, to); artistShare = collected; }
+    else { studioShare = collected * (100 - num(a.artistPct)) / 100; artistShare = collected - studioShare; }
+    return {artist:a, collected:collected, sessions:sessions, studioShare:studioShare, artistShare:artistShare};
+  });
+}
+function renderArtists(){
+  document.querySelector("#artistTable tbody").innerHTML = state.artists.length ? state.artists.map(function(a){
+    var terms = a.rentType==="flat" ? ("Flat "+money(a.flatRent)+"/mo") : ("Split — artist keeps "+num(a.artistPct)+"%");
+    return '<tr><td><b>'+esc(a.name)+'</b>'+(a.notes?'<div class="mut">'+esc(a.notes)+'</div>':"")+'</td><td>'+esc(a.role)+'</td><td>'+esc(terms)+'</td><td><div class="rowbtns"><button class="btn secondary small" data-edit-artist="'+a.id+'" type="button">Edit</button><button class="btn danger small" data-del-artist="'+a.id+'" type="button">Delete</button></div></td></tr>';
+  }).join("") : '<tr><td colspan="4"><div class="empty">No artists yet — add yourself first.</div></td></tr>';
+}
+document.getElementById("artistForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var id = document.getElementById("artistId").value;
+  var name = document.getElementById("artistName").value.trim();
+  if(!name){ showErr("An artist needs a name."); return; }
+  var rec = {
+    id: id || uid(), name: name,
+    role: document.getElementById("artistRole").value,
+    rentType: document.getElementById("artistRentType").value,
+    artistPct: Math.min(100, Math.max(0, num(document.getElementById("artistPct").value))),
+    flatRent: Math.max(0, num(document.getElementById("artistFlat").value)),
+    notes: document.getElementById("artistNotes").value.trim()
+  };
+  if(id){ var i = state.artists.findIndex(function(x){ return x.id===id; }); if(i>=0) state.artists[i]=rec; }
+  else state.artists.push(rec);
+  save(); resetArtistForm(); renderAll(); showMsg("Artist saved.");
+});
+function resetArtistForm(){
+  document.getElementById("artistForm").reset();
+  document.getElementById("artistId").value = "";
+  document.getElementById("artistFormTitle").textContent = "New artist";
+  document.getElementById("artistCancelEdit").style.display = "none";
+}
+document.getElementById("artistCancelEdit").addEventListener("click", resetArtistForm);
+document.querySelector("#artistTable").addEventListener("click", function(ev){
+  var eb = ev.target.closest("[data-edit-artist]"), db = ev.target.closest("[data-del-artist]");
+  if(eb){
+    var a = byId(state.artists, eb.getAttribute("data-edit-artist")); if(!a) return;
+    document.getElementById("artistId").value = a.id;
+    document.getElementById("artistName").value = a.name;
+    document.getElementById("artistRole").value = a.role;
+    document.getElementById("artistRentType").value = a.rentType;
+    document.getElementById("artistPct").value = a.artistPct;
+    document.getElementById("artistFlat").value = a.flatRent || "";
+    document.getElementById("artistNotes").value = a.notes || "";
+    document.getElementById("artistFormTitle").textContent = "Edit artist";
+    document.getElementById("artistCancelEdit").style.display = "";
+    window.scrollTo(0,0);
+  }
+  if(db){
+    var q = byId(state.artists, db.getAttribute("data-del-artist")); if(!q) return;
+    if(confirm("Delete artist "+q.name+"? Their sessions and pieces stay but show as (artist deleted).")){
+      state.artists = state.artists.filter(function(z){ return z.id!==q.id; });
+      save(); renderAll(); showMsg("Artist deleted.");
+    }
+  }
+});
+document.getElementById("repBtn").addEventListener("click", function(){
+  var from = document.getElementById("repFrom").value, to = document.getElementById("repTo").value;
+  if(!from || !to){ showErr("Pick a from and to date for the report."); return; }
+  if(from > to){ showErr("From date is after To date."); return; }
+  clearNotes();
+  var rep = artistReport(from, to);
+  var totC = 0, totS = 0, totA = 0;
+  var rows = rep.map(function(r){
+    totC += r.collected; totS += r.studioShare; totA += r.artistShare;
+    return '<tr><td>'+esc(r.artist.name)+'</td><td>'+r.sessions+'</td><td>'+money(r.collected)+'</td><td>'+money(r.studioShare)+'</td><td>'+money(r.artistShare)+'</td></tr>';
+  }).join("");
+  document.getElementById("repOut").innerHTML = '<div class="tblwrap"><table><thead><tr><th>Artist</th><th>Done sessions</th><th>Collected</th><th>Studio share / rent</th><th>Artist keeps</th></tr></thead><tbody>'+rows+'<tr><td><b>Total</b></td><td></td><td><b>'+money(totC)+'</b></td><td><b>'+money(totS)+'</b></td><td><b>'+money(totA)+'</b></td></tr></tbody></table></div>';
+});
+
+/* ---- settings & backup ---- */
+document.getElementById("studioForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  state.studio.name = document.getElementById("studioName").value.trim();
+  state.studio.formVersion = document.getElementById("studioFormVer").value.trim();
+  state.studio.policy = document.getElementById("studioPolicy").value.trim();
+  save(); renderAll(); showMsg("Settings saved.");
+});
+document.getElementById("exportBtn").addEventListener("click", function(){
+  var blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "inkbook-backup-" + todayISO() + ".json";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+  showMsg("Backup exported — keep it somewhere safe.");
+});
+document.getElementById("importFile").addEventListener("change", function(ev){
+  var f = ev.target.files && ev.target.files[0];
+  if(!f) return;
+  var reader = new FileReader();
+  reader.onload = function(){
+    try{
+      var p = JSON.parse(String(reader.result));
+      if(!p || typeof p !== "object" || !Array.isArray(p.clients) || !Array.isArray(p.artists)) throw new Error("shape");
+      state = sanitizeState(p); save(); syncSettingsForm(); resetAllForms(); renderAll();
+      showMsg("Backup imported. Everything now shows the restored book.");
+    }catch(e){
+      showErr("That file is not a valid InkBook backup — nothing was changed.");
+    }
+    ev.target.value = "";
+  };
+  reader.onerror = function(){ showErr("Could not read that file — nothing was changed."); ev.target.value = ""; };
+  reader.readAsText(f);
+});
+document.getElementById("clearDemoBtn").addEventListener("click", function(){
+  if(confirm("Clear ALL records (artists, clients, consents, deposits, pieces, sessions) and start fresh? Studio settings are kept. Export a backup first if you want the demo back.")){
+    var keep = state.studio;
+    state = blankState(); state.studio = keep;
+    save(); resetAllForms(); renderAll(); showMsg("All records cleared. Fresh book — add your artists and clients to begin.");
+  }
+});
+function syncSettingsForm(){
+  document.getElementById("studioName").value = state.studio.name || "";
+  document.getElementById("studioFormVer").value = state.studio.formVersion || "";
+  document.getElementById("studioPolicy").value = state.studio.policy || "";
+  document.getElementById("hdrStudio").textContent = state.studio.name ? state.studio.name : "Tattoo & Piercing Studio Book";
+}
+function resetAllForms(){ resetSessForm(); resetPieceForm(); resetClientForm(); resetDepForm(); resetConsentForm(); resetArtistForm(); }
+
+/* ---- master render & init ---- */
+function renderAll(){
+  refreshDropdowns();
+  renderDashboard(); renderSessions(); renderPieces(); renderClients(); renderDeposits(); renderConsents(); renderArtists();
+  document.getElementById("depPolicyNote").textContent = state.studio.policy ? ("Studio deposit policy: " + state.studio.policy) : "";
+}
+load();
+document.getElementById("hdrToday").textContent = fmtDate(todayISO());
+document.getElementById("sessDateView").value = todayISO();
+document.getElementById("sessDate").value = todayISO();
+document.getElementById("depDate").value = todayISO();
+document.getElementById("consentDate").value = todayISO();
+document.getElementById("consentVersion").value = state.studio.formVersion || "";
+(function(){
+  var t = todayISO();
+  document.getElementById("repFrom").value = t.slice(0,8) + "01";
+  document.getElementById("repTo").value = t;
+})();
+syncSettingsForm();
+renderAll();
+
+/* ================= Legal — Terms of Use acceptance (catalog pattern v1.0) ================= */
+var TERMS_VERSION = "1.0";
+var LEGAL_APP_NAME = "InkBook";
+var LEGAL_HAS_DISCLAIMER = false;
+var LEGAL_TERMS_HTML = "<h3>Terms of Use \u2014 White Wolf Digital Apps</h3><p><b>Version 1.0 (DRAFT \u2014 pending attorney review)</b></p><p><b>Seller: White Wolf Tree Service LLC, selling digital products under the name \"White Wolf Digital\"</b></p><p><b>Contact: whitewolfoklahoma@gmail.com</b></p><h4>1. What you're buying</h4><p>Our apps (including ForgeFit AI, ForgeKitchen, TreeBid Pro, SnowBid,</p><p>WashPrice Pro, RoofSquares, JobProfit Tracker, PastureLedger, and the other</p><p>titles sold under White Wolf Digital) are single-file software tools. When</p><p>you buy one, you are buying a <b>license to use the file</b>, not ownership of</p><p>the software itself.</p><h4>2. Your license</h4><ul><li>You may use the app for your own personal or business work.</li><li>You may open it on your own devices (phone, tablet, computer) and move your</li></ul><p>  own data between them using the app's built-in backup/export tools.</p><ul><li>You may <b>not</b> resell, redistribute, give away, upload, or share the app</li></ul><p>  file (or a copy of it) with anyone else \u2014 including posting it online,</p><p>  bundling it with other products, or selling access to it.</p><ul><li>You may <b>not</b> claim the app as your own work, remove its branding or</li></ul><p>  notices, or use it to build a competing product for resale.</p><ul><li>One purchase = one buyer. A business purchase covers the buyer and their</li></ul><p>  own employees using it for that business's work; it does not cover other</p><p>  businesses.</p><h4>3. Your data stays yours \u2014 and stays on your device</h4><ul><li>The current versions of our apps run <b>entirely on your device</b>. They have</li></ul><p>  no accounts, no sign-in, no analytics, and they collect, transmit, and store</p><p>  <b>none</b> of your information on any server. We never see your data.</p><ul><li>Your records are stored in your browser/app storage on your device. **You</li></ul><p>  are responsible for backing them up** using the app's export tools. If you</p><p>  clear your browser data, lose your device, or uninstall the app, your</p><p>  records may be permanently lost, and we cannot recover them \u2014 we never had</p><p>  a copy.</p><ul><li>Files you export (backups, quotes, PDFs) are under your control. Where you</li></ul><p>  store or send them is up to you.</p><h4>4. Estimates are tools, not guarantees</h4><p>Every number our apps produce \u2014 bids, prices, costs, calorie targets,</p><p>projections, schedules, totals \u2014 is an **estimate generated from the</p><p>information you enter and the settings you choose**. Outputs are aids for</p><p>your own judgment, not guarantees of price, profit, outcome, or result. You</p><p>are responsible for checking any output before relying on it (see also the</p><p>disclaimer that applies to your app: Health Disclaimer for fitness/nutrition</p><p>apps, Estimator Disclaimer for contractor tools). If an input is wrong, the</p><p>output will be wrong.</p><h4>5. Acceptable use</h4><p>Don't use the apps to break the law, infringe anyone's rights, or</p><p>misrepresent quotes, invoices, or records to your own customers. For the</p><p>fitness apps, the guardrails in the app (healthy-rate limits, calorie floor)</p><p>are part of the product \u2014 don't treat the app as a way around them.</p><h4>6. Provided \"as is\"</h4><p>The apps are provided **\"as is\" and \"as available,\" without warranties of</p><p>any kind**, express or implied \u2014 including merchantability, fitness for a</p><p>particular purpose, accuracy of calculations, and uninterrupted or</p><p>error-free operation \u2014 to the maximum extent allowed by law. Software has</p><p>bugs; browsers change; we work to fix problems but do not promise any app is</p><p>error-free or will work on every device or browser forever.</p><h4>7. Limitation of liability</h4><p>To the maximum extent allowed by law:</p><ul><li>We are **not liable for indirect, incidental, special, or consequential</li></ul><p>  damages** \u2014 including lost profits, lost or mispriced jobs, lost data, or</p><p>  business interruption \u2014 arising from use of the apps.</p><ul><li>Our total liability for any claim connected to an app is limited to the</li></ul><p>  <b>amount you paid for that app</b>.</p><ul><li>Nothing in these terms limits liability that cannot legally be limited.</li></ul><h4>8. Refunds</h4><p>Refunds are handled **by the storefront you bought from, under that</p><p>storefront's policy** \u2014 Gumroad's refund policy for Gumroad purchases, and</p><p>Google Play's refund policy for Play purchases. These terms do not add to,</p><p>replace, or override the storefront's refund rules. If a file is defective</p><p>and won't open, contact us at whitewolfoklahoma@gmail.com and we'll fix or</p><p>replace the file.</p><h4>9. Updates and changes to these terms</h4><ul><li>We may release updated versions of an app. Updates may add, change, or</li></ul><p>  remove features.</p><ul><li>We may update these terms. The version you agreed to is recorded in the</li></ul><p>  app (version number and date) at first-run acceptance. If terms change,</p><p>  the app may ask you to accept the new version once on next open. Updated</p><p>  terms apply going forward, not retroactively.</p><ul><li>If you don't agree to an updated version of the terms, stop using the app.</li></ul><h4>10. Governing law</h4><p>These terms are governed by the laws of the <b>State of Oklahoma</b>, USA.</p><p>(Attorney to confirm governing law and venue before publication.)</p><h4>11. Contact</h4><p>White Wolf Tree Service LLC (White Wolf Digital) \u2014</p><p>whitewolfoklahoma@gmail.com.</p><h4>CONNECTED FEATURES \u2014 takes effect only when these features ship</h4><p>*The sections below apply only to future connected features (device sync via</p><p>Health Connect, AI voice logging, and the AI Goal Preview in ForgeFit). They</p><p>do not apply to the current offline versions, which never transmit data.*</p><ul><li><b>Opt-in only.</b> Connected features are off by default. Each one asks for</li></ul><p>  your separate, explicit consent \u2014 on its own consent screen, in plain</p><p>  language \u2014 before anything leaves your device. Declining never disables</p><p>  the app's offline features.</p><ul><li><b>What gets sent.</b> Only what the consent screen names, only when you use</li></ul><p>  the feature: for example, a meal description (text, or audio only if cloud</p><p>  transcription is on) for AI voice logging, or the single photo you choose</p><p>  for an AI Goal Preview.</p><ul><li><b>No retention by us.</b> Our relay service passes your request to the named</li></ul><p>  AI provider and keeps nothing \u2014 no copies of your photos, audio,</p><p>  transcripts, or entries are stored on our servers. Provider handling is</p><p>  described on the consent screen and in the Privacy Policy.</p><ul><li><b>Health data stays on the device.</b> Device sync (Health Connect) reads</li></ul><p>  your health data on your phone and stores it in the app on your phone. It</p><p>  is not uploaded to us.</p><ul><li><b>Allowances.</b> Some connected features run on third-party AI services we</li></ul><p>  pay for per use, so they may include a monthly allowance described in the</p><p>  app (for example, a set number of AI previews or voice entries per month),</p><p>  with optional additional credits. Allowances and pricing will be shown in</p><p>  the app before you use the feature; they are not a subscription unless the</p><p>  app says so in plain words.</p><ul><li><b>Permissions.</b> Connected features may request device permissions (such</li></ul><p>  as Health Connect access or the microphone) at the moment you first use</p><p>  them. You can revoke permissions any time in your device settings; the</p><p>  related feature will simply stop working.</p>";
+var LEGAL_DISCLAIMER_HTML = "<h3>Estimator Disclaimer \u2014 Contractor &amp; Trade Tools</h3><p>**Applies to: TreeBid Pro, SnowBid, WashPrice Pro, RoofSquares, JobProfit</p><p>Tracker, FieldForms Toolkit, PaintPro, FenceDeck, MarketMaker, and the other</p><p>estimating/pricing tools sold under White Wolf Digital \u2014 including bundles</p><p>that contain them.**</p><h4>Estimating aids, not finished quotes</h4><ul><li>These apps are <b>estimating and record-keeping aids</b>. Every bid, price,</li></ul><p>  cost, measurement, and total they produce is an **estimate based on the</p><p>  information and rates you enter**.</p><ul><li>**You \u2014 the business owner \u2014 are responsible for verifying everything</li></ul><p>  before you quote a customer:** measurements and quantities, site</p><p>  conditions, your current material and labor costs, your rates and margins,</p><p>  taxes, permit and license requirements, disposal rules, and any contract</p><p>  terms.</p><ul><li>Default rates, presets, and sample data included in the apps are starting</li></ul><p>  points only. They are not market prices, not industry standards, and not</p><p>  a recommendation of what you should charge.</p><ul><li>A saved quote keeps the prices in effect when you created it (price</li></ul><p>  snapshot). Changing your presets later does not change saved quotes \u2014</p><p>  and a saved quote is still your responsibility to review before sending.</p><h4>Specific tools</h4><ul><li><b>TreeBid Pro:</b> tree work is dangerous and site-specific. Difficulty</li></ul><p>  factors and presets cannot see the actual tree, lean, rot, targets, or</p><p>  access. Inspect every job in person before final pricing. The \"Invoice</p><p>  with Wave\" feature is an open-and-paste handoff \u2014 TreeBid does not</p><p>  connect to Wave, and the invoice you send from Wave is yours.</p><ul><li><b>RoofSquares / measurement tools:</b> confirm roof measurements and pitch</li></ul><p>  in person or by your usual method before ordering materials.</p><ul><li><b>SnowBid / seasonal tools:</b> route times, snowfall amounts, and service</li></ul><p>  pricing vary by storm and site; seasonal contracts are your agreement</p><p>  with your customer, on your terms.</p><ul><li><b>JobProfit Tracker:</b> profit figures depend on the costs you enter.</li></ul><p>  The app is not accounting or tax software and does not replace your</p><p>  bookkeeper or accountant.</p><h4>Bottom line</h4><p>If an output and your judgment disagree, trust your judgment \u2014 then fix the</p><p>input. We are not responsible for jobs won, lost, or mispriced based on app</p><p>outputs, within the limits of the Terms of Use.</p>";
+(function(){
+  var lst = document.createElement("style");
+  lst.textContent = "@media print{ #legalOverlay{ display:none !important; } }";
+  document.head.appendChild(lst);
+})();
+function sanitizeLegal(v){
+  if(!v || typeof v !== "object") return null;
+  if(typeof v.termsVersion !== "string" || typeof v.acceptedDate !== "string") return null;
+  return { termsVersion: v.termsVersion.slice(0, 10), acceptedDate: v.acceptedDate.slice(0, 40), disclaimerShown: !!v.disclaimerShown };
+}
+function legalRecord(){
+  try{ var s = state; return (s && s.legal) ? sanitizeLegal(s.legal) : null; }catch(e){ return null; }
+}
+function legalVersionCmp(a, b){
+  var pa = String(a).split("."), pb = String(b).split(".");
+  for(var i = 0; i < 3; i++){ var d = (parseInt(pa[i], 10) || 0) - (parseInt(pb[i], 10) || 0); if(d) return d; }
+  return 0;
+}
+function legalAcceptLine(){
+  var rec = legalRecord();
+  if(rec && rec.acceptedDate) return "You agreed to Terms v" + rec.termsVersion + " on " + rec.acceptedDate.slice(0, 10) + ".";
+  return "No Terms acceptance is recorded on this device yet \u2014 the current Terms will be shown for your agreement.";
+}
+function legalSectionHTML(){
+  var h = '<div style="border-top:2px solid rgba(127,127,127,.35);margin-top:20px;padding-top:14px;">'
+    + '<h2>Legal</h2>'
+    + '<p>' + legalAcceptLine() + '</p>'
+    + '<h3>Terms of Use (v' + TERMS_VERSION + ')</h3>'
+    + '<div style="max-height:340px;overflow-y:auto;border:1px solid rgba(127,127,127,.4);border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.55;">' + LEGAL_TERMS_HTML + '</div>';
+  if(LEGAL_HAS_DISCLAIMER){
+    h += '<h3>Estimator Disclaimer</h3>'
+      + '<div style="max-height:260px;overflow-y:auto;border:1px solid rgba(127,127,127,.4);border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.55;">' + LEGAL_DISCLAIMER_HTML + '</div>';
+  }
+  h += '<h3>Privacy</h3>'
+    + '<p>This app collects no data. It has no accounts, no sign-in, no analytics, and no server \u2014 everything you enter is stored only on this device, in this browser\u2019s storage, and nothing is transmitted anywhere. Files you export (backups, quotes, prints) are under your control. You are responsible for backing up your records with the app\u2019s export tools.</p>'
+    + '<p>Sold by White Wolf Tree Service LLC (White Wolf Digital) \u2014 whitewolfoklahoma@gmail.com</p>'
+    + '</div>';
+  return h;
+}
+function legalFillSection(){
+  var el = document.getElementById("legalSection");
+  if(!el) return;
+  var sig = legalAcceptLine();
+  if(el.getAttribute("data-legal-filled") === sig) return;
+  el.innerHTML = legalSectionHTML(); el.setAttribute("data-legal-filled", sig);
+}
+function legalRefreshSection(){
+  var el = document.getElementById("legalSection");
+  if(el){ el.innerHTML = legalSectionHTML(); el.setAttribute("data-legal-filled", legalAcceptLine()); }
+}
+function legalShowOverlay(isUpdate){
+  if(document.getElementById("legalOverlay")) return;
+  var ov = document.createElement("div");
+  ov.id = "legalOverlay";
+  ov.setAttribute("style", "position:fixed;inset:0;z-index:99999;background:rgba(8,10,14,.74);overflow-y:auto;padding:20px 12px;display:flex;align-items:flex-start;justify-content:center;");
+  var discBtn = LEGAL_HAS_DISCLAIMER ? '<button type="button" id="legalReadDisc" style="min-height:44px;padding:10px 14px;border-radius:10px;border:1px solid #9aa4b2;background:#ffffff;color:#1c2733;font-size:15px;cursor:pointer;">Read the Estimator Disclaimer</button>' : '';
+  var checkLabel = LEGAL_HAS_DISCLAIMER ? "I have read the disclaimer and I agree to the Terms of Use" : "I have read and I agree to the Terms of Use";
+  ov.innerHTML = '<div style="background:#ffffff;color:#1c2733;max-width:560px;width:100%;border-radius:14px;padding:22px 20px;box-shadow:0 18px 50px rgba(0,0,0,.45);font-size:15px;line-height:1.55;">'
+    + '<h2 style="margin:0 0 6px;font-size:21px;">' + LEGAL_APP_NAME + ' \u2014 Terms of Use</h2>'
+    + (isUpdate ? '<p style="background:#fdf3d7;border:1px solid #e4cf8a;border-radius:8px;padding:8px 10px;"><b>Our terms were updated (v' + TERMS_VERSION + ').</b></p>' : '')
+    + '<p style="font-size:16px;"><b>Your data stays on your device.</b><br><b>Estimates are aids, not guarantees.</b><br><b>You\'re responsible for checking outputs before you rely on them.</b></p>'
+    + '<p>The full Terms' + (LEGAL_HAS_DISCLAIMER ? ' and Disclaimer are' : ' are') + ' one tap away, now and any time in Settings \u2192 Legal.</p>'
+    + '<div id="legalReader" style="display:none;max-height:44vh;overflow-y:auto;border:1px solid #d5dbe3;border-radius:10px;padding:10px 14px;margin:10px 0;font-size:14px;"></div>'
+    + '<p style="display:flex;gap:8px;flex-wrap:wrap;"><button type="button" id="legalReadTerms" style="min-height:44px;padding:10px 14px;border-radius:10px;border:1px solid #9aa4b2;background:#ffffff;color:#1c2733;font-size:15px;cursor:pointer;">Read the full Terms</button>' + discBtn + '</p>'
+    + '<label style="display:flex;gap:10px;align-items:flex-start;margin:12px 0;cursor:pointer;"><input type="checkbox" id="legalCheck" style="width:22px;height:22px;min-width:22px;margin-top:1px;cursor:pointer;"><span>' + checkLabel + '</span></label>'
+    + '<button type="button" id="legalAgree" disabled style="min-height:52px;width:100%;border:0;border-radius:10px;background:#1f5fa8;color:#ffffff;font-size:17px;font-weight:700;cursor:pointer;opacity:.55;">I Agree</button>'
+    + '<p style="font-size:13px;color:#5a6675;margin-bottom:0;">Your records stay loaded behind this screen and are never deleted or locked, whether or not you agree now.</p>'
+    + '</div>';
+  document.body.appendChild(ov);
+  var reader = ov.querySelector("#legalReader");
+  var showing = "";
+  function toggleReader(kind){
+    if(showing === kind){ reader.style.display = "none"; showing = ""; return; }
+    reader.innerHTML = kind === "terms" ? LEGAL_TERMS_HTML : LEGAL_DISCLAIMER_HTML;
+    reader.style.display = "block"; showing = kind;
+    reader.scrollTop = 0;
+  }
+  ov.querySelector("#legalReadTerms").addEventListener("click", function(){ toggleReader("terms"); });
+  var db = ov.querySelector("#legalReadDisc");
+  if(db) db.addEventListener("click", function(){ toggleReader("disc"); });
+  var legalChk = ov.querySelector("#legalCheck");
+  var legalAgreeBtn = ov.querySelector("#legalAgree");
+  legalChk.addEventListener("change", function(){ legalAgreeBtn.disabled = !legalChk.checked; legalAgreeBtn.style.opacity = legalChk.checked ? "1" : ".55"; });
+  legalAgreeBtn.addEventListener("click", function(){
+    if(!legalChk.checked) return;
+    try{ state.legal = { termsVersion: TERMS_VERSION, acceptedDate: new Date().toISOString(), disclaimerShown: LEGAL_HAS_DISCLAIMER }; save(); }catch(e){}
+    if(ov.parentNode) ov.parentNode.removeChild(ov);
+    legalRefreshSection();
+  });
+}
+function legalInit(){
+  legalFillSection();
+  var rec = legalRecord();
+  if(rec && legalVersionCmp(rec.termsVersion, TERMS_VERSION) >= 0) return;
+  legalShowOverlay(!!rec);
+}
+if(typeof MutationObserver !== "undefined"){
+  var legalObs = new MutationObserver(function(){ legalFillSection(); });
+  legalObs.observe(document.documentElement, { childList: true, subtree: true });
+}
+if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", function(){ setTimeout(legalInit, 30); });
+else setTimeout(legalInit, 30);
+
+</script>
+</body>
+</html>
